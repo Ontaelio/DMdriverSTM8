@@ -365,56 +365,56 @@ void clearAll()
 void setGlobalBrightness(uint8_t bri)
 {
 
-//clear GS data to avoid flickering
-uint16_t k;
-//uint8_t count;
-for (k=0; k<pinNum*2; k++) dm_shift(0);
-
-SPI_CR1 &= ~SPE; //disable SPI
-PC_ODR = (1<<5); //SCK high
-
-/*** 4 LAT pulses to turn on GBC input mode */
-LAT_pulse(); LAT_pulse(); LAT_pulse(); LAT_pulse();
-
-PC_ODR &= ~(1<<5); //SCK low
-SPI_CR1 |= SPE; //enable SPI
-
-/*** shift GBC data to the drivers */
-/*** (each DM gets one byte; 7 upper bits control GB data, LSB should be 0 (o/s flag) */
-for (k=0; k<DMnum; k++) {dm_shift(bri<<1);}
-
-while (SPI_SR & BSY); //finish the transmission
-LAT_pulse();
-
-sendAll(); //restore GS data
+	//clear GS data to avoid flickering
+	uint16_t k;
+	//uint8_t count;
+	for (k=0; k<pinNum*2; k++) dm_shift(0);
+	
+	SPI_CR1 &= ~SPE; //disable SPI
+	PC_ODR = (1<<5); //SCK high
+	
+	/*** 4 LAT pulses to turn on GBC input mode */
+	LAT_pulse(); LAT_pulse(); LAT_pulse(); LAT_pulse();
+	
+	PC_ODR &= ~(1<<5); //SCK low
+	SPI_CR1 |= SPE; //enable SPI
+	
+	/*** shift GBC data to the drivers */
+	/*** (each DM gets one byte; 7 upper bits control GB data, LSB should be 0 (o/s flag) */
+	for (k=0; k<DMnum; k++) {dm_shift(bri<<1);}
+	
+	while (SPI_SR & BSY); //finish the transmission
+	LAT_pulse();
+	
+	sendAll(); //restore GS data
 
 }
 
 void setGBCbyDriver(uint8_t *bri)
 {
-uint16_t k;
-
-//clear GS data to avoid flickering
-for (k=0; k<pinNum*2; k++) dm_shift(0);
-
-SPI_CR1 &= ~SPE; //disable SPI
-PC_ODR = (1<<5); //SCK high
-
-/*** 4 LAT pulses to turn on GBC input mode */
-LAT_pulse(); LAT_pulse(); LAT_pulse(); LAT_pulse();
-
-PC_ODR &= ~(1<<5); //SCK low
-SPI_CR1 |= SPE; //enable SPI
-
-/*** shift GBC data to the drivers */
-/*** (each DM gets one byte; 7 upper bits control GB data, LSB should be 0 (o/s flag) */
-for (k=0; k<DMnum; k++)
-{dm_shift((bri[DMnum-k-1]<<1));}
-
-while (SPI_SR & BSY); //finish the transmission
-LAT_pulse();
-
-sendAll(); //restore GS data
+	uint16_t k;
+	
+	//clear GS data to avoid flickering
+	for (k=0; k<pinNum*2; k++) dm_shift(0);
+	
+	SPI_CR1 &= ~SPE; //disable SPI
+	PC_ODR = (1<<5); //SCK high
+	
+	/*** 4 LAT pulses to turn on GBC input mode */
+	LAT_pulse(); LAT_pulse(); LAT_pulse(); LAT_pulse();
+	
+	PC_ODR &= ~(1<<5); //SCK low
+	SPI_CR1 |= SPE; //enable SPI
+	
+	/*** shift GBC data to the drivers */
+	/*** (each DM gets one byte; 7 upper bits control GB data, LSB should be 0 (o/s flag) */
+	for (k=0; k<DMnum; k++)
+	{dm_shift((bri[DMnum-k-1]<<1));}
+	
+	while (SPI_SR & BSY); //finish the transmission
+	LAT_pulse();
+	
+	sendAll(); //restore GS data
 
 }
 
